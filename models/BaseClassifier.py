@@ -56,7 +56,7 @@ class BaseClassifier(ABC):
     @abstractmethod
     def top_k_accuracy(self, *args: Any, **kwargs: Any) -> Any:
         """
-        Abstract method for top k accuracy.
+        Abstract method for top k accuracy that all classifiers must implement.
 
         Args:
             *args: Additional positional arguments.
