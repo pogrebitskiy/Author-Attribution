@@ -31,16 +31,22 @@ class Embeddings:
         else:
             return self.bert
 
-    def get_labels(self, raw=False, as_torch=False):
+    def get_labels(self, as_torch=False, raw=False):
         labels = self.raw_labels if raw else self.encoded_labels
         if as_torch:
             return torch.from_numpy(labels)
         else:
             return labels
 
-    def get_dataloader(self, batch_size=32, shuffle=True):
-        # Create a TensorDataset
-        dataset = TensorDataset(self.get_bert(as_torch=True), self.get_labels(as_torch=True))
+    def get_dataloader(self, embedding_type, batch_size=32, shuffle=True):
+
+        # Pick bert or doc2vec
+        if embedding_type == "doc2vec":
+            dataset = TensorDataset(self.get_doc2vec(as_torch=True), self.get_labels(as_torch=True))
+        elif embedding_type == "bert":
+            dataset = TensorDataset(self.get_bert(as_torch=True), self.get_labels(as_torch=True))
+        else:
+            raise ValueError("Invalid data type")
 
         # Create a DataLoader
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
