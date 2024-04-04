@@ -6,14 +6,18 @@ By: David Pogrebitskiy and Jacob Ostapenko
 import torch
 import numpy as np
 from torch.utils.data import TensorDataset, DataLoader
+import pickle
 
 
 class Embeddings:
-    def __init__(self, doc2vec_file, bert_file, labels_file):
+    def __init__(self, doc2vec_file, bert_file, raw_labels_file, encoded_labels_file, encoder_pickle):
         # Load the embeddings from the .npy files
-        self.doc2vec = np.load(doc2vec_file)
-        self.bert = np.load(bert_file)
-        self.labels = np.load(labels_file)
+        self.doc2vec = np.load(doc2vec_file, allow_pickle=True)
+        self.bert = np.load(bert_file, allow_pickle=True)
+        self.raw_labels = np.load(raw_labels_file, allow_pickle=True)
+        self.encoded_labels = np.load(encoded_labels_file, allow_pickle=True)
+        with open(encoder_pickle, 'rb') as f:
+            self.encoder = pickle.load(f)
 
     def get_doc2vec(self, as_torch=False):
         if as_torch:
@@ -27,11 +31,12 @@ class Embeddings:
         else:
             return self.bert
 
-    def get_labels(self, as_torch=False):
+    def get_labels(self, raw=False, as_torch=False):
+        labels = self.raw_labels if raw else self.encoded_labels
         if as_torch:
-            return torch.from_numpy(self.labels)
+            return torch.from_numpy(labels)
         else:
-            return self.labels
+            return labels
 
     def get_dataloader(self, batch_size=32, shuffle=True):
         # Create a TensorDataset
