@@ -58,7 +58,7 @@ class SklearnClassifier(BaseClassifier):
 
     def evaluate(self, X_test: np.ndarray, y_test: np.ndarray) -> Dict[str, Any]:
         """
-        Evaluate the model using precision, recall, f1, accuracy, and top k accuracy.
+        Evaluate the model using precision, recall, and f1, accuracy
 
         Args:
             X_test (ndarray): Test data.
