@@ -10,29 +10,6 @@ import scipy as sp
 from sklearn.preprocessing import StandardScaler
 
 
-def get_feature_matrix(file_path: str) -> np.array:
-    """
-    Read a file and return a feature matrix.
-    Args:
-        file_path: path to the file
-    """
-    if file_path.endswith('.npy'):
-        return np.load(file_path, allow_pickle=True)
-    elif file_path.endswith('.npz'):
-        return sp.sparse.load_npz(file_path).toarray()
-
-
-def get_dense_matrix(sparse_matrix: sp.sparse._csr.csr_matrix) -> np.array:
-    """
-    Convert a sparse matrix to a dense matrix.
-    Args:
-        sparse_matrix: the sparse matrix
-    Returns:
-        the dense matrix
-    """
-    return sparse_matrix.toarray()
-
-
 def get_prfa(y_true: list, y_pred: list) -> dict:
     """
     Calculate precision, recall, f1, and accuracy for a given set of predictions and labels.
