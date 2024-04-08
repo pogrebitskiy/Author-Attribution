@@ -7,6 +7,7 @@ Date: 03/30/2023
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 import numpy as np
 import scipy as sp
+from sklearn.preprocessing import StandardScaler
 
 
 def get_feature_matrix(file_path: str) -> np.array:
@@ -65,3 +66,14 @@ def get_label(encoder, encoding):
     """
     return encoder.inverse_transform([encoding])
 
+
+def scale_feature_matrix(feature_matrix: np.array) -> np.array:
+    """
+    Scale the feature matrix.
+    Args:
+        feature_matrix: the feature matrix
+    Returns:
+        the scaled feature matrix
+    """
+    scaler = StandardScaler()
+    return scaler.fit_transform(feature_matrix)
