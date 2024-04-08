@@ -38,8 +38,8 @@ class Embeddings:
         else:
             return labels
 
-    def decode_labels(self, encoding):
-        return self.encoder.inverse_transform([encoding])
+    def decode_labels(self, encoded_labels):
+        return self.encoder.inverse_transform(encoded_labels)
 
     def get_torch_dataloader(self, embedding_type, batch_size=32, shuffle=True):
 
