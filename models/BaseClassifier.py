@@ -6,6 +6,7 @@ Date: 03/31/2023
 
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Tuple
+
 import utils
 
 
@@ -26,7 +27,6 @@ class BaseClassifier(ABC):
         """
         self.model = model
 
-    @abstractmethod
     def train(self, *args: Any, **kwargs: Any) -> None:
         """
         Abstract method for training that all classifiers must implement.
@@ -40,7 +40,6 @@ class BaseClassifier(ABC):
         """
         pass
 
-    @abstractmethod
     def predict(self, X_test: Any) -> Any:
         """
         Abstract method for prediction that all classifiers must implement.
@@ -50,20 +49,6 @@ class BaseClassifier(ABC):
 
         Returns:
             Any: Predicted labels for X_test.
-        """
-        pass
-
-    @abstractmethod
-    def top_k_accuracy(self, *args: Any, **kwargs: Any) -> Any:
-        """
-        Abstract method for top k accuracy that all classifiers must implement.
-
-        Args:
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
-
-        Returns:
-            Any: Top k accuracy.
         """
         pass
 
@@ -80,3 +65,7 @@ class BaseClassifier(ABC):
         """
         y_pred = self.predict(X_test)
         return utils.get_prfa(y_test, y_pred)
+
+    def confusion_matrix(self, *args, **kwargs):
+        """ Method to get the confusion matrix """
+        pass

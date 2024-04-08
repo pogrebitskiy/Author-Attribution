@@ -8,6 +8,9 @@ from models.BaseClassifier import BaseClassifier
 import utils
 import numpy as np
 from typing import Any, Dict
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 class SklearnClassifier(BaseClassifier):
@@ -53,25 +56,6 @@ class SklearnClassifier(BaseClassifier):
         """
         return self.model.predict(X_test)
 
-    def top_k_accuracy(self, X_test: np.ndarray, y_test: np.ndarray, k: int) -> float:
-        """
-        Calculate top k accuracy.
-
-        Args:
-            X_test (ndarray): Test data.
-            y_test (ndarray): True labels.
-            k (int): Value of k for top k accuracy.
-
-        Returns:
-            float: Top k accuracy.
-        """
-        classes = self.model.classes_
-        y_pred_proba = self.model.predict_proba(X_test)
-        y_test_encoded = np.array([list(classes).index(label) for label in y_test])
-        top_k_preds = np.argsort(y_pred_proba, axis=1)[:, -k:]
-        match_array = np.logical_or.reduce(y_test_encoded.reshape(-1, 1) == top_k_preds, axis=1)
-        return np.mean(match_array)
-
     def evaluate(self, X_test: np.ndarray, y_test: np.ndarray, top_k: int = 3) -> Dict[str, Any]:
         """
         Evaluate the model using precision, recall, f1, accuracy, and top k accuracy.
@@ -79,12 +63,33 @@ class SklearnClassifier(BaseClassifier):
         Args:
             X_test (ndarray): Test data.
             y_test (ndarray): True labels.
-            top_k (int): Value of k for top k accuracy. Default is 3.
 
         Returns:
             dict: A dictionary of metrics.
         """
         y_pred = self.predict(X_test)
         metrics = utils.get_prfa(y_test, y_pred)
-        metrics['Top-k Accuracy'] = self.top_k_accuracy(X_test, y_test, top_k)
         return metrics
+
+    def get_confusion_matrix(self, X_test: np.ndarray, y_test: np.ndarray, title: str) -> None:
+        """
+        Get the confusion matrix.
+
+        Args:
+            X_test (ndarray): Test data.
+            y_test (ndarray): True labels.
+            title (str): Title for the confusion matrix.
+
+        Returns:
+            ndarray: The confusion matrix.
+        """
+        y_pred = self.predict(X_test)
+        mat = confusion_matrix(y_test, y_pred)
+
+        # Visualize the confusion matrix
+        fig, ax = plt.subplots(figsize=(10, 10))
+        sns.heatmap(mat, annot=True, fmt='d', cmap='Blues', ax=ax)
+        ax.set_xlabel('Predicted labels')
+        ax.set_ylabel('True labels')
+        ax.set_title(title)
+        plt.show()
