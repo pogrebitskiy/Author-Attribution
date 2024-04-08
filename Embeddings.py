@@ -38,7 +38,10 @@ class Embeddings:
         else:
             return labels
 
-    def get_dataloader(self, embedding_type, batch_size=32, shuffle=True):
+    def decode_labels(self, encoding):
+        return self.encoder.inverse_transform([encoding])
+
+    def get_torch_dataloader(self, embedding_type, batch_size=32, shuffle=True):
 
         # Pick bert or doc2vec
         if embedding_type == "doc2vec":
