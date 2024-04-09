@@ -40,18 +40,3 @@ class Embeddings:
 
     def decode_labels(self, encoded_labels):
         return self.encoder.inverse_transform(encoded_labels)
-
-    def get_torch_dataloader(self, embedding_type, batch_size=32, shuffle=True):
-
-        # Pick bert or doc2vec
-        if embedding_type == "doc2vec":
-            dataset = TensorDataset(self.get_doc2vec(as_torch=True), self.get_labels(as_torch=True))
-        elif embedding_type == "bert":
-            dataset = TensorDataset(self.get_bert(as_torch=True), self.get_labels(as_torch=True))
-        else:
-            raise ValueError("Invalid data type")
-
-        # Create a DataLoader
-        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
-
-        return dataloader
