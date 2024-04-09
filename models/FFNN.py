@@ -10,19 +10,19 @@ import torch
 
 
 class FFNN(nn.Module):
-    def __init__(self, input_size: int, hidden_size: int, num_classes: int) -> None:
+    def __init__(self, input_dim: int, hidden_dim: int, output_dim: int) -> None:
         """
         Initialize the FFNN.
 
         Args:
-            input_size (int): The size of the input features.
-            hidden_size (int): The size of the hidden layer.
-            num_classes (int): The number of classes.
+            input_dim (int): The size of the input features.
+            hidden_dim (int): The size of the hidden layer.
+            output_dim (int): The number of classes.
         """
         super().__init__()
-        self.fc1 = nn.Linear(input_size, hidden_size)
+        self.fc1 = nn.Linear(input_dim, hidden_dim)
         self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, num_classes)
+        self.fc2 = nn.Linear(hidden_dim, output_dim)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
