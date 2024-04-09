@@ -4,11 +4,12 @@ This class implements a wrapper for Torch classifiers. It inherits from the Base
 By: David Pogrebitskiy and Jacob Ostapenko
 Date: 04/08/2023
 """
+from typing import Any
 
 import torch
 from sklearn.metrics import confusion_matrix
 from torch.utils.data import DataLoader, TensorDataset
-from BaseClassifier import BaseClassifier
+from models.BaseClassifier import BaseClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -19,19 +20,19 @@ class TorchClassifier(BaseClassifier):
     The classifier can be trained on a GPU if one is available.
     """
 
-    def __init__(self, model: torch.nn.Module) -> None:
+    def __init__(self, model: torch.nn.Module, **kwargs: Any) -> None:
         """
         Initialize the TorchClassifier.
 
         Args:
             model (torch.nn.Module): The PyTorch model to be trained.
         """
-        super().__init__(model)
+        super().__init__(model(**kwargs))
         # Check if a GPU is available and if so, move the model to the GPU
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.model.to(self.device)
 
-    def train(self, X_train: torch.Tensor, y_train: torch.Tensor, epochs: int = 10) -> None:
+    def train(self, X_train: torch.Tensor, y_train: torch.Tensor, epochs: int = 10, batch_size: int = 32) -> None:
         """
         Train the model.
 
@@ -42,7 +43,7 @@ class TorchClassifier(BaseClassifier):
         """
         # Create a DataLoader for the training data
         train_data = TensorDataset(X_train, y_train)
-        train_loader = DataLoader(train_data, batch_size=32, shuffle=True)
+        train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 
         # Define a loss function and an optimizer
         loss_fn = torch.nn.CrossEntropyLoss()
@@ -59,6 +60,9 @@ class TorchClassifier(BaseClassifier):
                 loss = loss_fn(outputs, labels)
                 loss.backward()
                 optimizer.step()
+
+            # Print the progress of the training
+            print(f'Epoch {epoch + 1}/{epochs}, Loss: {loss.item()}')
 
     def predict(self, X_test: torch.Tensor) -> torch.Tensor:
         """
