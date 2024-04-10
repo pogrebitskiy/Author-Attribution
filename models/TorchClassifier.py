@@ -40,6 +40,7 @@ class TorchClassifier(BaseClassifier):
             X_train (torch.Tensor): Training data.
             y_train (torch.Tensor): Training labels.
             epochs (int): Number of epochs to train the model.
+            batch_size (int): Batch size for training.
         """
         # Create a DataLoader for the training data
         train_data = TensorDataset(X_train, y_train)
