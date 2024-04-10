@@ -6,7 +6,7 @@ This project aims to compare the performance of different classification techniq
 
 ### Project Structure
 The project is structured as follows:
-- `evaluation/`: Contains the evaluation results of the models.
+- `evaluation/`: Contains the evaluation results of the models. This is where you can find the Precision, Recall, F1 Score, and Accuracy of the models as well as the confusion matrices.
 - `data/`: Contains the dataset used for the project. The raw dataset is too large to be included in the repository. The filtered dataset is serialized as `data/cleaned_articles.pkl`.
 - `models/`: Contains the classes used to modularize the models.
 - `pickles/`: Contains the pickled objects used to store label encoders.
