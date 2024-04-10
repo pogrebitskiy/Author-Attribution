@@ -11,6 +11,7 @@ from typing import Any, Dict
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.model_selection import RandomizedSearchCV
 
 
 class SklearnClassifier(BaseClassifier):
@@ -21,15 +22,15 @@ class SklearnClassifier(BaseClassifier):
         model: The scikit-learn classifier model.
     """
 
-    def __init__(self, model, **kwargs: Any) -> None:
+    def __init__(self, model) -> None:
         """
         Initialize the SklearnClassifier.
 
         Args:
             model (ClassifierMixin): The scikit-learn classifier model.
-            **kwargs: Additional keyword arguments to be passed to the model constructor.
         """
-        super().__init__(model(**kwargs))
+        super().__init__(model)
+        self.best_hyperparams = None
 
     def train(self, X_train: np.ndarray, y_train: np.ndarray) -> None:
         """
@@ -43,6 +44,44 @@ class SklearnClassifier(BaseClassifier):
             None
         """
         self.model.fit(X_train, y_train)
+
+    def hyperparameter_tuning(self, X_train: np.ndarray, y_train: np.ndarray, param_options: dict,
+                              n_iter: int = 10, cv: int = 5, random_state: int = 42,
+                              verbose: int = 2, n_jobs: int = -1) -> None:
+        """
+        Perform hyperparameter tuning using RandomizedSearchCV.
+
+        Args:
+            X_train (ndarray): Training data.
+            y_train (ndarray): Target labels.
+            param_options (dict): Dictionary with parameters names (str) as keys and distributions
+                                        or lists of parameters to try.
+            n_iter (int, optional): Number of parameter settings that are sampled. Defaults to 100.
+            cv (int, optional): Determines the cross-validation splitting strategy. Defaults to 5.
+            random_state (int, RandomState instance or None, optional): Pseudo random number generator state
+            verbose (int, optional): Controls the verbosity. Defaults to 2.
+            n_jobs (int, optional): Number of jobs to run in parallel. Defaults to -1.
+
+
+        Returns:
+            RandomizedSearchCV: Fitted RandomizedSearchCV instance.
+        """
+        random_search = RandomizedSearchCV(self.model, param_options, n_iter=n_iter, cv=cv,
+                                           random_state=random_state, verbose=verbose, n_jobs=n_jobs)
+        random_search.fit(X_train, y_train)
+
+        # Set the best parameters to the model
+        self.model = random_search.best_estimator_
+        self.best_hyperparams = random_search.best_params_
+
+    def get_best_hyperparams(self) -> Dict[str, Any]:
+        """
+        Get the best hyperparameters found during hyperparameter tuning.
+
+        Returns:
+            dict: A dictionary of the best hyperparameters.
+        """
+        return self.best_hyperparams
 
     def predict(self, X_test: np.ndarray) -> np.ndarray:
         """
