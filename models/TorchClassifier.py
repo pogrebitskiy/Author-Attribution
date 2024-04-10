@@ -32,7 +32,8 @@ class TorchClassifier(BaseClassifier):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.model.to(self.device)
 
-    def train(self, X_train: torch.Tensor, y_train: torch.Tensor, epochs: int = 10, batch_size: int = 32) -> None:
+    def train(self, X_train: torch.Tensor, y_train: torch.Tensor, epochs: int = 10, batch_size: int = 32,
+              lr: float = 0.001, weight_decay: float = 0.0) -> None:
         """
         Train the model.
 
@@ -41,6 +42,8 @@ class TorchClassifier(BaseClassifier):
             y_train (torch.Tensor): Training labels.
             epochs (int): Number of epochs to train the model.
             batch_size (int): Batch size for training.
+            lr (float): Learning rate for the optimizer.
+            weight_decay (float): Weight decay for the optimizer.
         """
         # Create a DataLoader for the training data
         train_data = TensorDataset(X_train, y_train)
@@ -48,7 +51,7 @@ class TorchClassifier(BaseClassifier):
 
         # Define a loss function and an optimizer
         loss_fn = torch.nn.CrossEntropyLoss()
-        optimizer = torch.optim.Adam(self.model.parameters())
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
         # Train the model
         self.model.train()
@@ -87,7 +90,7 @@ class TorchClassifier(BaseClassifier):
         _, predicted = torch.max(outputs, 1)
         return predicted.cpu()
 
-    def confusion_matrix(self, X_test: torch.Tensor, y_test: torch.Tensor, title: str) -> None:
+    def get_confusion_matrix(self, X_test: torch.Tensor, y_test: torch.Tensor, title: str) -> None:
         """
         Compute and visualize the confusion matrix.
 
