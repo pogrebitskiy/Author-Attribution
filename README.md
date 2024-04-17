@@ -16,3 +16,5 @@ The project is structured as follows:
 
 ### References
 - Abbasi, Ahmed, et al. "Authorship Identification Using Ensemble Learning." Scientific Reports, vol. 12, no. 1, 2022, pp. 1-16, https://doi.org/10.1038/s41598-022-13690-4. Accessed 10 Apr. 2024.
+- Chawla, N. V., Bowyer, K. W., Hall, L. O., & Kegelmeyer, W. P. (2002). SMOTE: synthetic minority over-sampling technique. Journal of Artificial Intelligence Research, 16, 321–357. https://arxiv.org/abs/1106.1813.
+- Thompson, A. All the news: 143,000 articles from 15 american publications. https://www.kaggle.com/snapcrack/all-the-news (2017).
