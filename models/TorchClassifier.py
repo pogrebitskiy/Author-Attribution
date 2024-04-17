@@ -12,6 +12,8 @@ from torch.utils.data import DataLoader, TensorDataset
 from models.BaseClassifier import BaseClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas
+import numpy as np
 
 
 class TorchClassifier(BaseClassifier):
@@ -90,7 +92,26 @@ class TorchClassifier(BaseClassifier):
         _, predicted = torch.max(outputs, 1)
         return predicted.cpu()
 
-    def get_confusion_matrix(self, X_test: torch.Tensor, y_test: torch.Tensor, title: str) -> None:
+
+    def get_misclassified_stats(self, misclassified_indices: torch.Tensor) -> dict:
+        """
+        Get the misclassified stats.
+
+        Args:
+            misclassified_indices (torch.Tensor): Indices of the misclassified samples.
+
+        Returns:
+            dict: A dictionary containing the misclassified stats.
+        """
+        preprocessesed_data = pandas.read_pickle('data/preprocessed_data.pkl')
+        misclassified_rows = preprocessesed_data.iloc[misclassified_indices]
+        misclassified_stats = {}
+        misclassified_stats['mean_article_length'] = np.mean([len(row['content'] for row in misclassified_rows)])
+        misclassified_stats['publishers'] = misclassified_rows['publisher'].value_counts()
+        misclassified_stats['authors'] = misclassified_rows['author'].value_counts()
+        return misclassified_stats
+    
+    def get_confusion_matrix(self, X_test: torch.Tensor, y_test: torch.Tensor, title: str, test_index: torch.Tensor) -> None:
         """
         Compute and visualize the confusion matrix.
 
@@ -102,6 +123,12 @@ class TorchClassifier(BaseClassifier):
         # Predict the labels
         y_pred = self.predict(X_test)
         mat = confusion_matrix(y_test, y_pred)
+
+        #misclassification stats
+        misclassified_indices_raw = [i for i in range(len(y_test)) if y_test[i] != y_pred[i]]
+        misclassified_indices_original_dataset = test_index[misclassified_indices_raw]
+        misclassified_stats = self.get_misclassified_stats(misclassified_indices_original_dataset)
+        print(misclassified_stats)
 
         # Visualize the confusion matrix
         fig, ax = plt.subplots(figsize=(10, 10))
