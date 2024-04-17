@@ -102,7 +102,7 @@ class TorchClassifier(BaseClassifier):
         Returns:
             dict: A dictionary containing the misclassified stats.
         """
-        preprocessesed_data = pd.read_pickle('data/cleaned_articles.pkl')
+        preprocessesed_data = pd.read_pickle('../data/cleaned_articles.pkl')
         misclassified_rows = preprocessesed_data.iloc[misclassified_indices]
         misclassified_stats = {}
         misclassified_stats['mean_article_length'] = np.mean([len(row['clean_content'].split()) for index, row in misclassified_rows.iterrows()])
