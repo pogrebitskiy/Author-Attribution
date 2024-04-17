@@ -3,7 +3,7 @@ Utils for CS4120 Project
 By: David Pogrebitskiy and Jacob Ostapenko
 Date: 03/30/2023
 """
-
+from imblearn.over_sampling import SMOTE
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 import numpy as np
 import scipy as sp
@@ -54,3 +54,17 @@ def scale_feature_matrix(feature_matrix: np.array) -> np.array:
     """
     scaler = StandardScaler()
     return scaler.fit_transform(feature_matrix)
+
+
+def over_sample(X_train, y_train):
+    """
+    Over sample the data with SMOTE.
+    Args:
+        X_train: the training data
+        y_train: the training labels
+    Returns:
+        the over sampled data
+    """
+    smote = SMOTE(random_state=42)
+    X_res, y_res = smote.fit_resample(X_train, y_train)
+    return X_res, y_res
