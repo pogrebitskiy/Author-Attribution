@@ -1,4 +1,4 @@
-# CS4120-Project
+# Author-Attribution
 ## By: David Pogrebitskiy and Jacob Ostapenko
 
 ### Project Description
